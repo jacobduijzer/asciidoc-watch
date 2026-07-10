@@ -135,7 +135,7 @@ docker compose down
 
 ## Publishing The Docker Image
 
-This repository includes a GitHub Actions workflow that builds and pushes the Docker image on pushes to `main`, version tags such as `v1.0.0`, and manual workflow runs.
+This repository includes a GitHub Actions workflow that builds and pushes the Docker image on pushes to `main`, version tags such as `v1.0.0`, and manual workflow runs. The workflow calculates the version with GitVersion and publishes only `latest` and `vX.X.X` image tags.
 
 Configure these repository secrets:
 
