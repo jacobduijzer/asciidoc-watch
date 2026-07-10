@@ -9,6 +9,21 @@ OUTPUT_DIR="${OUTPUT_DIR:-${SOURCE_DIR}/output}"
 
 OUTPUT_FILE="${OUTPUT_FILE:-document.pdf}"
 POLL_INTERVAL="${POLL_INTERVAL:-1}"
+current_child_pid=""
+
+stop_watcher() {
+  echo
+  echo "Stopping watcher."
+
+  if [[ -n "${current_child_pid}" ]] && kill -0 "${current_child_pid}" 2>/dev/null; then
+    kill "${current_child_pid}" 2>/dev/null || true
+    wait "${current_child_pid}" 2>/dev/null || true
+  fi
+
+  exit 0
+}
+
+trap stop_watcher INT TERM
 
 # Optional environment variables:
 #
@@ -160,16 +175,22 @@ build_pdf() {
 
   echo "=================================================="
 
-  if asciidoctor-pdf \
+  asciidoctor-pdf \
     --failure-level=WARN \
     --trace \
     --base-dir "${SOURCE_DIR}" \
     "${args[@]}" \
     -D "${OUTPUT_DIR}" \
     -o "${OUTPUT_FILE}" \
-    "${input_file}"; then
+    "${input_file}" &
+
+  current_child_pid="$!"
+
+  if wait "${current_child_pid}"; then
+    current_child_pid=""
     echo "Created ${OUTPUT_DIR}/${OUTPUT_FILE} at $(date '+%Y-%m-%d %H:%M:%S')"
   else
+    current_child_pid=""
     echo "PDF build failed at $(date '+%Y-%m-%d %H:%M:%S')."
     return 1
   fi
@@ -195,5 +216,8 @@ while true; do
     fi
   fi
 
-  sleep "${POLL_INTERVAL}"
+  sleep "${POLL_INTERVAL}" &
+  current_child_pid="$!"
+  wait "${current_child_pid}" || true
+  current_child_pid=""
 done
