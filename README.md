@@ -133,6 +133,26 @@ Stop the watcher:
 docker compose down
 ```
 
+## Publishing The Docker Image
+
+This repository includes a GitHub Actions workflow that builds and pushes the Docker image on pushes to `main`, version tags such as `v1.0.0`, and manual workflow runs.
+
+Configure these repository secrets:
+
+| Secret | Description |
+| --- | --- |
+| `REGISTRY_USERNAME` | Docker registry username |
+| `REGISTRY_PASSWORD` | Docker registry password or access token |
+
+Optional repository variables:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `DOCKER_REGISTRY` | `docker.io` | Registry hostname |
+| `DOCKER_IMAGE_NAME` | GitHub repository name, for example `jacobduijzer/asciidoc-watch` | Image name to publish |
+
+For Docker Hub, set `REGISTRY_USERNAME` to your Docker Hub username and `REGISTRY_PASSWORD` to a Docker Hub access token.
+
 ## How It Works
 
 The container periodically calculates a checksum of all relevant files in the documentation project. When the checksum changes, it invokes Asciidoctor PDF to regenerate the document.
