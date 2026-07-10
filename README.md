@@ -17,33 +17,52 @@ Whenever an AsciiDoc file, image, theme, or font changes, the PDF is regenerated
 ## Requirements
 
 - Docker
-- Docker Compose
 
 ## Quick Start
 
-Clone this repository.
+Run the published Docker image directly. You do not need to clone this repository or use Docker Compose for normal usage.
 
 ```sh
-git clone https://github.com/<your-account>/asciidoc-watch.git
-cd asciidoc-watch
+docker run --rm \
+  --name asciidoc-watch \
+  -v "/path/to/your/docs:/work" \
+  jacobduijzer/asciidoc-watch:latest
 ```
 
-Point the container to your documentation project.
+When running from inside your documentation directory, you can use `$PWD`:
 
 ```sh
-export DOCS_DIR=/path/to/your/docs
+docker run --rm \
+  --name asciidoc-watch \
+  -v "$PWD:/work" \
+  jacobduijzer/asciidoc-watch:latest
 ```
 
-Or run it in one command:
-
-```sh
-DOCS_DIR=/path/to/your/docs docker compose up --build
-```
+The command runs in the foreground so you can see rebuild output while working. Press `Ctrl+C` to stop the watcher.
 
 The generated PDF will appear in:
 
 ```text
 build/document.pdf
+```
+
+## Docker Compose
+
+Docker Compose is optional. If you prefer it, create a `docker-compose.yml` next to your documentation files:
+
+```yaml
+services:
+  asciidoc:
+    image: jacobduijzer/asciidoc-watch:latest
+    container_name: asciidoc-watch
+    volumes:
+      - .:/work
+```
+
+Then run:
+
+```sh
+docker compose up
 ```
 
 ## Example Project
@@ -72,10 +91,12 @@ The container can be configured using environment variables.
 Example:
 
 ```sh
-DOCS_DIR=./docs \
-INPUT_FILE=manual.adoc \
-OUTPUT_FILE=manual.pdf \
-docker compose up
+docker run --rm \
+  --name asciidoc-watch \
+  -v "$PWD/docs:/work" \
+  -e INPUT_FILE=manual.adoc \
+  -e OUTPUT_FILE=manual.pdf \
+  jacobduijzer/asciidoc-watch:latest
 ```
 
 ## Theme Support
@@ -115,22 +136,14 @@ The watcher rebuilds whenever any of these files change:
 
 The `build/` directory is ignored to prevent rebuild loops.
 
-## Running In The Background
+## Stopping The Watcher
+
+The recommended `docker run` command runs in the foreground so rebuild output is visible while you work. Stop it with `Ctrl+C`.
+
+If you started it from another terminal, stop the named container with:
 
 ```sh
-docker compose up -d
-```
-
-View the logs:
-
-```sh
-docker compose logs -f
-```
-
-Stop the watcher:
-
-```sh
-docker compose down
+docker stop asciidoc-watch
 ```
 
 ## Publishing The Docker Image
