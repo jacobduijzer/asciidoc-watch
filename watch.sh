@@ -5,7 +5,7 @@ set -Eeuo pipefail
 DOCS_DIR="${DOCS_DIR:-.}"
 
 SOURCE_DIR="${SOURCE_DIR:-/work}"
-OUTPUT_DIR="${OUTPUT_DIR:-${SOURCE_DIR}/build}"
+OUTPUT_DIR="${OUTPUT_DIR:-${SOURCE_DIR}/output}"
 
 OUTPUT_FILE="${OUTPUT_FILE:-document.pdf}"
 POLL_INTERVAL="${POLL_INTERVAL:-1}"

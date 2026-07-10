@@ -11,7 +11,7 @@ Whenever an AsciiDoc file, image, theme, or font changes, the PDF is regenerated
 - 🖼️ Watches AsciiDoc, images, themes, and fonts
 - 🐳 Runs entirely inside Docker
 - 💻 Cross-platform (macOS, Windows, Linux)
-- 📁 Generates PDFs into a `build/` directory
+- 📁 Generates PDFs into an `output/` directory
 - ⚙️ Zero configuration for most projects
 
 ## Requirements
@@ -21,6 +21,8 @@ Whenever an AsciiDoc file, image, theme, or font changes, the PDF is regenerated
 ## Quick Start
 
 Run the published Docker image directly. You do not need to clone this repository or use Docker Compose for normal usage.
+
+The `-v` option mounts your local documentation folder into the container as `/work`. Anything written to `/work/output` appears in the local `output/` folder.
 
 ```sh
 docker run --rm \
@@ -40,10 +42,10 @@ docker run --rm \
 
 The command runs in the foreground so you can see rebuild output while working. Press `Ctrl+C` to stop the watcher.
 
-The generated PDF will appear in:
+The generated PDF will appear in your local documentation folder at:
 
 ```text
-build/document.pdf
+output/document.pdf
 ```
 
 ## Docker Compose
@@ -65,6 +67,23 @@ Then run:
 docker compose up
 ```
 
+To configure all variables in Docker Compose:
+
+```yaml
+services:
+  asciidoc:
+    image: jacobduijzer/asciidoc-watch:latest
+    container_name: asciidoc-watch
+    volumes:
+      - .:/work
+    environment:
+      SOURCE_DIR: /work
+      OUTPUT_DIR: /work/output
+      INPUT_FILE: index.adoc
+      OUTPUT_FILE: document.pdf
+      POLL_INTERVAL: 1
+```
+
 ## Example Project
 
 ```text
@@ -74,7 +93,7 @@ docs/
 ├── images/
 ├── themes/
 │   └── my-theme-theme.yml
-└── build/
+└── output/
 ```
 
 ## Configuration
@@ -85,6 +104,7 @@ The container can be configured using environment variables.
 | --- | --- | --- |
 | `DOCS_DIR` | `.` | Host directory to mount into the container |
 | `INPUT_FILE` | `index.adoc` | Root AsciiDoc document |
+| `OUTPUT_DIR` | `/work/output` | Container directory where the PDF is written. With the default mount, this is your local `output/` folder. |
 | `OUTPUT_FILE` | `document.pdf` | Name of the generated PDF |
 | `POLL_INTERVAL` | `1` | Poll interval in seconds |
 
@@ -95,6 +115,7 @@ docker run --rm \
   --name asciidoc-watch \
   -v "$PWD/docs:/work" \
   -e INPUT_FILE=manual.adoc \
+  -e OUTPUT_DIR=/work/output \
   -e OUTPUT_FILE=manual.pdf \
   jacobduijzer/asciidoc-watch:latest
 ```
@@ -134,7 +155,7 @@ The watcher rebuilds whenever any of these files change:
 - `*.ttf`
 - `*.otf`
 
-The `build/` directory is ignored to prevent rebuild loops.
+The output directory is ignored to prevent rebuild loops.
 
 ## Stopping The Watcher
 
