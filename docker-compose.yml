@@ -16,5 +16,6 @@ services:
       INPUT_FILE: "${INPUT_FILE:-index.adoc}"
       OUTPUT_FILE: "${OUTPUT_FILE:-document.pdf}"
       POLL_INTERVAL: "${POLL_INTERVAL:-1}"
+      ONCE: "${ONCE:-false}"
 
     restart: unless-stopped

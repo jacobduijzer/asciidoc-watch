@@ -107,6 +107,7 @@ The container can be configured using environment variables.
 | `OUTPUT_DIR` | `/work/output` | Container directory where the PDF is written. With the default mount, this is your local `output/` folder. |
 | `OUTPUT_FILE` | `document.pdf` | Name of the generated PDF |
 | `POLL_INTERVAL` | `1` | Poll interval in seconds |
+| `ONCE` | `false` | Set to `true` to build once and exit, useful for CI pipelines |
 
 Example:
 
@@ -118,6 +119,23 @@ docker run --rm \
   -e OUTPUT_DIR=/work/output \
   -e OUTPUT_FILE=manual.pdf \
   jacobduijzer/asciidoc-watch:latest
+```
+
+## CI Usage
+
+Use `ONCE=true` in CI so the container builds the PDF once and exits instead of watching for changes.
+
+Example Azure Pipelines step:
+
+```yaml
+- script: |
+    docker run --rm \
+      -v "$(System.DefaultWorkingDirectory):/work" \
+      -e INPUT_FILE=tech-screening.adoc \
+      -e OUTPUT_FILE=tech-screening.pdf \
+      -e ONCE=true \
+      jacobduijzer/asciidoc-watch:latest
+  displayName: Build PDF
 ```
 
 ## Theme Support

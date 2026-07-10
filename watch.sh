@@ -9,6 +9,7 @@ OUTPUT_DIR="${OUTPUT_DIR:-${SOURCE_DIR}/output}"
 
 OUTPUT_FILE="${OUTPUT_FILE:-document.pdf}"
 POLL_INTERVAL="${POLL_INTERVAL:-1}"
+ONCE="${ONCE:-false}"
 current_child_pid=""
 
 stop_watcher() {
@@ -29,6 +30,7 @@ trap stop_watcher INT TERM
 #
 # INPUT_FILE=index.adoc
 # THEME=themes/bimcollab-theme.yml
+# ONCE=true
 
 if [[ ! -d "${SOURCE_DIR}" ]]; then
   echo "Source directory does not exist: ${SOURCE_DIR}"
@@ -202,6 +204,11 @@ echo "Container src : ${SOURCE_DIR}"
 echo "Working dir   : $(pwd)"
 echo "Output        : ${OUTPUT_DIR}/${OUTPUT_FILE}"
 echo "Poll interval : ${POLL_INTERVAL}s"
+
+if [[ "${ONCE}" == "true" ]]; then
+  build_pdf
+  exit $?
+fi
 
 previous_hash=""
 
