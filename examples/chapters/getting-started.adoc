@@ -1,0 +1,5 @@
+// docs/chapters/getting-started.adoc
+
+== Getting started
+
+Edit this file and save it. The PDF should be rebuilt automatically.

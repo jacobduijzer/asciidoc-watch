@@ -1,0 +1,13 @@
+= Example Documentation
+Jacob Duijzer
+:doctype: book
+:toc:
+:toclevels: 3
+:imagesdir: images
+:source-highlighter: rouge
+
+== Introduction
+
+This PDF is regenerated whenever an AsciiDoc source file or image changes.
+
+include::chapters/getting-started.adoc[]

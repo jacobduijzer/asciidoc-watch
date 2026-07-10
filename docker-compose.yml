@@ -1,0 +1,20 @@
+services:
+  asciidoc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: asciidoc-watch
+
+    volumes:
+      - "${DOCS_DIR:-.}:/work"
+
+    environment:
+      DOCS_DIR: "${DOCS_DIR:-.}"
+      SOURCE_DIR: /work
+      OUTPUT_DIR: /work/build
+      INPUT_FILE: "${INPUT_FILE:-index.adoc}"
+      OUTPUT_FILE: "${OUTPUT_FILE:-document.pdf}"
+      POLL_INTERVAL: "${POLL_INTERVAL:-1}"
+
+    restart: unless-stopped
