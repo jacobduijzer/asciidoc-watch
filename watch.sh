@@ -116,6 +116,9 @@ build_pdf() {
   local input_path
   local theme_path=""
   local args=()
+  local started_at
+
+  started_at="$(date '+%Y-%m-%d %H:%M:%S')"
 
   if ! input_file="$(find_input_file)"; then
     echo "No AsciiDoc input file found in ${SOURCE_DIR}."
@@ -147,7 +150,7 @@ build_pdf() {
 
   echo
   echo "=================================================="
-  echo "Building PDF"
+  echo "Building PDF at ${started_at}"
   echo "Input : ${input_path}"
   echo "Output: ${OUTPUT_DIR}/${OUTPUT_FILE}"
 
@@ -165,9 +168,9 @@ build_pdf() {
     -D "${OUTPUT_DIR}" \
     -o "${OUTPUT_FILE}" \
     "${input_file}"; then
-    echo "Created ${OUTPUT_DIR}/${OUTPUT_FILE}"
+    echo "Created ${OUTPUT_DIR}/${OUTPUT_FILE} at $(date '+%Y-%m-%d %H:%M:%S')"
   else
-    echo "PDF build failed."
+    echo "PDF build failed at $(date '+%Y-%m-%d %H:%M:%S')."
     return 1
   fi
 }
